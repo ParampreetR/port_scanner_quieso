@@ -1,6 +1,6 @@
 # Quieso
 
-![Cheese Image](images/cheese.png)
+<img src="./images/cheese.png" style="zoom:20%;" />
 
 Quieso is simple port scanner written in C. It do not rely on high level libraries for scanning. This was mainly written for beginners to have idea about port scanning in C. All over Internet, I found a lack of port scanning code in C. Most programs are obsolete and don't even work. There are great open source scanner like nmap or rust scan but that code can not be understood by beginners. So this is simple code written towards people searching for write port scanner in C.
 
