@@ -4,7 +4,7 @@ struct thread_opts {
 	unsigned int port, timeout, thread_id, start, end;
 };
 
-int scanner_error(const char *s, int sock);
+int quieso_error(const char *s, int sock);
 
 void *worker(void *thread_args);
 

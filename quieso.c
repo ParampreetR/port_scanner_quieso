@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "src/queso.h"
+#include "src/quieso.h"
 #include "src/arg_parse.h"
 
 #define MAX_THREADS 500 /* Total Threads */
@@ -62,16 +62,16 @@ int scanner(const char * host, unsigned int *port, unsigned int timeout, unsigne
 
 		// Create a socket
 		if ((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-			return scanner_error("socket() An error has occurred", 0);
+			return quieso_error("socket() An error has occurred", 0);
 		
 
 		// Set port as reuseable. So we may not use up all avilable ports.
 		if(setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
-			return scanner_error("setsockopt() An error has occured", 0);
+			return quieso_error("setsockopt() An error has occured", 0);
 
 		// Make our socket non-blocking. Program will not stop until connection is made.
 		if(fcntl(sd, F_SETFL, O_NONBLOCK) == -1)
-			return scanner_error("fcntl() caused error", 1);;
+			return quieso_error("fcntl() caused error", 1);;
 
 		// Now connect() function will always returns -1 as we are in non-blocking flag.
 		if (connect(sd, (struct sockaddr *) &address, sizeof(address)) == -1) {
@@ -82,7 +82,7 @@ int scanner(const char * host, unsigned int *port, unsigned int timeout, unsigne
 					break;
 
 				default:			/* We want to give error on every other case */
-					return scanner_error("connect() An error has occurred", sd);
+					return quieso_error("connect() An error has occurred", sd);
 			}
 		}
 
@@ -90,7 +90,7 @@ int scanner(const char * host, unsigned int *port, unsigned int timeout, unsigne
 		
 		// Waiting for time when we can write on socket or timeout occurs
 		if ((write_permission = select(sd + 1, NULL, &write_fds, NULL, &tv)) == -1)
-			return scanner_error("select() An error has occurred", sd);
+			return quieso_error("select() An error has occurred", sd);
 
 		// If we got write permission
 		if (write_permission)
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
 
 	// If user do not specified host then print error and exit
 	if(strlen(user_args->host) == 0) {
-		scanner_error("[-] Please specify host\n", 1);
+		quieso_error("[-] Please specify host\n", 1);
 	}
 
 	// Create threads that will not do anything until we set opts[thread_id].start = 1
@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
 /*
  * Close socket and print some information if debugging.
  */
-int scanner_error(const char *s, int sock)
+int quieso_error(const char *s, int sock)
 {
 	#ifdef DEBUGING
 	perror(s);

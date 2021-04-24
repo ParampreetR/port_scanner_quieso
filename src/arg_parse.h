@@ -21,7 +21,7 @@ struct argp_option options[] = {
 };
 
 char doc[] =
-    "scanner is a simple port scanner that is intended to show some logic behind port scanning.\
+    "quieso is a simple port scanner that is intended to show some logic behind port scanning.\
 \vThis is still in devlopment, more things will be added soon";
 
 /* A description of the arguments we accept. */
@@ -62,8 +62,6 @@ struct argp argp = { options, parse_opt, args_doc, doc };
 
 struct arguments *parse_args(int argc, char *argv[]) {
     static struct arguments args;
-    printf("INSIDE1\n");
     argp_parse (&argp, argc, argv, 0, 0, &args);
-    printf("INSIDE2\n");
     return &args;
 }
