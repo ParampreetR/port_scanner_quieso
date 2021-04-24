@@ -1,14 +1,10 @@
 # Quieso
 
-------
-
 Quieso is simple port scanner written in C. It do not rely on high level libraries for scanning. This was mainly written for beginners to have idea about port scanning in C. All over Internet, I found a lack of port scanning code in C. Most programs are obsolete and don't even work. There are great open source scanner like nmap or rust scan but that code can not be understood by beginners. So this is simple code written towards people searching for write port scanner in C.
 
 
 
 ## Dependencies
-
-------
 
 Quieso is made to be very light. It had some dependencies
 
@@ -20,8 +16,6 @@ Quieso is made to be very light. It had some dependencies
 
 
 ## Some Notes
-
-------
 
 Quieso is still in steady development for more efficient and readable code. Practice will be to made existing code more understandable to beginners and will keep it working.
 
