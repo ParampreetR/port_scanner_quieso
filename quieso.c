@@ -55,7 +55,7 @@ int scanner(const char * host, unsigned int *port, unsigned int timeout, unsigne
 		// Seconds to timeout
 		tv.tv_sec = timeout;
 		// Microseconds to timeout
-		tv.tv_usec = timeout * 0;
+		tv.tv_usec = 0;
 
 		FD_ZERO(&write_fds);
 
@@ -90,12 +90,15 @@ int scanner(const char * host, unsigned int *port, unsigned int timeout, unsigne
 		FD_SET(sd, &write_fds);
 		
 		// Waiting for time when we can write on socket or timeout occurs
-		if ((write_permission = select(sd + 1, NULL, &write_fds, NULL, &tv)) == -1)
+		if((write_permission = select(sd + 1, NULL, &write_fds, NULL, &tv)) == -1)
 			return quieso_error("select() An error has occurred", sd);
 
 		// If we got write permission
-		if (write_permission)
-			printf("%d OPEN\n", *port);
+		if(write_permission)
+			if(getsockopt(sd, SOL_SOCKET, SO_ERROR, &so_error, &so_error_len) != -1) {
+				if(so_error == 0)
+					printf("%d OPEN\n", *port);
+			}
 
 		// Set port to 0. So we do not process one port again and again
 		*port = 0;
@@ -129,6 +132,7 @@ int main(int argc, char *argv[])
 	struct thread_opts opts[MAX_THREADS];
 	struct arguments *user_args;
 	int unsigned port_scan = 1;
+	struct hostent *target;
 
 	user_args = parse_args(argc, argv);
 
@@ -142,6 +146,17 @@ int main(int argc, char *argv[])
 	if(strlen(user_args->host) == 0) {
 		quieso_error("[-] Please specify host\n", 1);
 	}
+
+	// Resolve hostname
+	target = gethostbyname(user_args->host);
+
+	// Clear out space
+	bzero(user_args->host, sizeof(user_args->host));
+	// Copy to struct with typecasting
+	strcpy(user_args->host , inet_ntoa(*( (struct in_addr *)target->h_addr_list[0] )));
+	printf("Scanning %s\n", user_args->host);
+
+
 
 	// Create threads that will not do anything until we set opts[thread_id].start = 1
 	for(thread_id = 0; thread_id < MAX_THREADS; thread_id++) {
